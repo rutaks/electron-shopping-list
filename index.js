@@ -55,6 +55,7 @@ const mainMenuTemplate = [
     submenu: [
       {
         label: "Add Item",
+        accelerator: process.platform == "darwin" ? "Command+A" : "Ctrl+A",
         click() {
           createAddWindow();
         }
