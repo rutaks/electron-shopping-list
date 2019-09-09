@@ -4,9 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="bootstrap.css" />
     <title>Shopify</title>
   </head>
   <body>
-    <h1>Shopify</h1>
+    <div class="container">
+      <center>
+        <h1>Spopify</h1>
+      </center>
+      <ul></ul>
+    </div>
+
+    <script>
+      const electron = require("electron");
+      const { ipcRenderer } = electron;
+      const ul = document.querySelector("ul");
+
+      // Clear Items From List
+      ipcRenderer.on("item:clear", () => {
+        ul.innerHTML = "";
+      });
+
+      // Add Item To List
+      ipcRenderer.on("item:add", (e, item) => {
+        const li = document.createElement("li");
+        const item = document.createTextNode(item);
+        li.appendChild(itemText);
+        ul.appendChild(li);
+      });
+    </script>
   </body>
 </html>
