@@ -28,10 +28,17 @@
       // Add Item To List
       ipcRenderer.on("item:add", (e, item) => {
         const li = document.createElement("li");
-        const item = document.createTextNode(item);
+        const itemText = document.createTextNode(item);
         li.appendChild(itemText);
         ul.appendChild(li);
       });
+
+      ul.addEventListener("dblclick", removeItem);
+
+      function removeItem(e) {
+        e.target.remove();
+        if (ul.children.length == 0) ul.className = "";
+      }
     </script>
   </body>
 </html>

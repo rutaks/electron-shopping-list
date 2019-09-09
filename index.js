@@ -2,7 +2,7 @@ const electron = require("electron");
 const url = require("url");
 const path = require("path");
 
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, ipcMain } = electron;
 
 let mainWindow;
 let addWindow;
@@ -33,6 +33,20 @@ let createAddWindow = () => {
       slashes: true
     })
   );
+
+  ipcMain.on("item:add", (e, item) => {
+    console.log(item);
+    mainWindow.webContents.send("item:add", item);
+    // addWindow.close();
+  });
+
+  mainWindow.on("close", () => {
+    app.quit();
+  });
+
+  addWindow.on("close", () => {
+    addWindow = null;
+  });
 };
 
 const mainMenuTemplate = [
@@ -46,7 +60,10 @@ const mainMenuTemplate = [
         }
       },
       {
-        label: "Clear Items"
+        label: "Clear Items",
+        click() {
+          mainWindow.webContents.send("item:clear");
+        }
       },
       {
         label: "Quit",
@@ -58,3 +75,23 @@ const mainMenuTemplate = [
     ]
   }
 ];
+
+if (process.platform == "darwin") mainMenuTemplate.unshift({});
+
+if (process.env.NODE_ENV !== "production") {
+  mainMenuTemplate.push({
+    label: "Developer Tools",
+    submenu: [
+      {
+        label: "Toggle DevTools",
+        accelerator: process.platform == "darwin" ? "Command+I" : "Ctrl+I",
+        click(item, focusedWindow) {
+          focusedWindow.toggleDevTools();
+        }
+      },
+      {
+        role: "reload"
+      }
+    ]
+  });
+}
